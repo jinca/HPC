@@ -249,7 +249,7 @@ int main( int argc, char *argv[] )
    /* print the total time in rank 0*/
    if ( rank == 0 )
    {
-      endtim = MPI_Wtime() - startim;
+      printf( "Execution time was: %f:", endtim) ;
    }
 
    /* shut down MPI environment: MPI_COMM_WORLD */
