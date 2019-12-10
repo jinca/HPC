@@ -37,7 +37,7 @@ int main( int argc, char *argv[] )
    int         reorder;
    int         cart_rank;
    int         nbr_down, nbr_up, nbr_left, nbr_right;
-   int         dims[ndims]; dims[0] = 0; dims[0] = 0; 
+   int         dims[ndims]; dims[0] = 0; dims[1] = 0; 
    int         coord[ndims];
    int         period[ndims];
    MPI_Comm    comm2D;
@@ -72,9 +72,6 @@ int main( int argc, char *argv[] )
        printf( "\n" );
    }
 
-   /* Uncomment this lines to measure time of entire parallel version
-   startim = MPI_Wtime();
-   MPI_Barrier(MPI_COMM_WORLD); */
 
    /* broadcast the image in MPI_COMM_WORLD */ 
    MPI_Bcast( &buf, M*N, MPI_DOUBLE, 0, MPI_COMM_WORLD );
@@ -106,10 +103,6 @@ int main( int argc, char *argv[] )
    MPI_Type_vector( Mp,1,Np+2, MPI_DOUBLE, &row );
    MPI_Type_commit( &row );
   
- 
-   /* measure time of the parallel iteration version */
-   startim = MPI_Wtime();
-   MPI_Barrier(MPI_COMM_WORLD);
    
    /* generate the image from the edges */
    for( i = 1 ; i < Mp+1 ; i++ )
@@ -139,6 +132,12 @@ int main( int argc, char *argv[] )
       old[0][j] = (int)(255.0*(1.0-val));
       old[M][j] = (int)(255.0*val);
    }
+
+
+   /* measure time of the parallel iteration version */
+   startim = MPI_Wtime();
+   MPI_Barrier(MPI_COMM_WORLD);
+
 
    for( iter = 1 ; iter <= MAXITER; iter++ )
    {
@@ -171,9 +170,6 @@ int main( int argc, char *argv[] )
           }
       }
 
-       /* calculate elapse time of the parallel iteration version */
-       MPI_Barrier( MPI_COMM_WORLD );
-       endtim = MPI_Wtime() - startim;
 
        /* send rows to up neighbor */
        MPI_Isend( &old[1][Np], 1, row, nbr_up, 11, MPI_COMM_WORLD,&request );
@@ -196,6 +192,10 @@ int main( int argc, char *argv[] )
        MPI_Wait( &request, MPI_STATUS_IGNORE );
   
     }
+
+    /* calculate elapse time of the parallel iteration version */
+    MPI_Barrier( MPI_COMM_WORLD );
+    endtim = MPI_Wtime() - startim;
 
     printf("\nFinished %d iterations\n", iter-1);
 
