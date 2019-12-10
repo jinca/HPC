@@ -245,15 +245,11 @@ int main( int argc, char *argv[] )
       pgmwrite( filename, buf, M, N );
 
    }
-  
-   /* sum the time of all the processors to store it in total */ 
-   MPI_Reduce( &endtim, &total, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
 
    /* print the total time in rank 0*/
    if ( rank == 0 )
    {
-      total = total / size;
-      printf( "Elapse time for parallelising was: %.20lf\n", total );
+      endtim = MPI_Wtime() - startim;
    }
 
    /* shut down MPI environment: MPI_COMM_WORLD */
