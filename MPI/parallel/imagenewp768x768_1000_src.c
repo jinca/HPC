@@ -146,13 +146,6 @@ int main( int argc, char *argv[] )
           printf("Iteration %d\n", iter);
       }
 
-      /* Implement periodic boundary conditions on bottom and top sides */
-
-      for( i = 1 ; i < Mp+1 ; i++ )
-      {
-          old[i][0]   = old[i][Np+1];
-          old[i][Np+1] = old[i][1];
-      }
 
       for( i = 1 ; i < Mp+1 ; i++ )
       {
